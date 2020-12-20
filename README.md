@@ -9,7 +9,7 @@ Once built, you can execute the assignment from inside the `build/` using
 ```
 ./fluid
 ```
-
+Then, press `a/A/SPACE` to simulate for one step, and keep pressing for the animation
 ## Video
 Coming soon
 
