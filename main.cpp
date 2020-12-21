@@ -73,7 +73,11 @@ int main(int argc, char* argv[])
 		igl::opengl::glfw::Viewer viewer;
 		const int xid = viewer.selected_data_index;
 		//viewer.append_mesh();
-
+        std::cout<<R"(
+          A,a      Move one timestep forward for water simulation. This version considered the free surface boundary condition.
+          B,b      Move one timestep forward for smoke simulation. This version does not considered the free surface boundary condition.
+          R,r      Reset positions and velocities for all particles.
+        )";
 		
 		//about position and velocity
 		//starting corner for the fluid particles;
@@ -104,7 +108,20 @@ int main(int argc, char* argv[])
 		double rho = 10;
 		//double animate = false;
 		int counter = 0;
-
+        const auto & move = [&]()
+        {
+            advection(Position, Velocity, dt);
+            fix_points(Position, Velocity, grid_corner, nx, ny, nz, h);
+            gravity(Velocity, g, dt);
+            particle_to_grid(grid, Position, Velocity, grid_corner, nx, ny, nz, h);
+            pressure(grid, rho, dt);
+            pressure_projection(grid, rho, dt);
+            solid_boundary(grid);
+            grid_to_particle(grid, Position, Velocity);
+            viewer.data_list[xid].set_points(Position, (1. - (1. - particle_color.array()) * .9));
+            counter += 1;
+            
+        };
 		const auto& move_free_surface = [&]()
 		{
 			advection(Position, Velocity, dt);
@@ -129,10 +146,14 @@ int main(int argc, char* argv[])
 			{
 			case 'A':
 			case 'a':
-			case ' ':
-				//no ghost pressure
+				//with ghost pressure
 				move_free_surface();
 				break;
+            case 'b':
+            case 'B':
+                //no ghost pressure
+                move();
+                break;
 			case 'R':
 			case 'r':
 				reset();
@@ -154,7 +175,10 @@ int main(int argc, char* argv[])
 		igl::opengl::glfw::Viewer viewer;
 		const int xid = viewer.selected_data_index;
 		viewer.append_mesh();
-
+        std::cout<<R"(
+          A,a      Move one timestep forward for water simulation. 
+          R,r      Reset positions and velocities for all particles.
+        )";
 		//about position and velocity
 		//starting corner for the fluid particles;
 		Particles particles;
@@ -215,10 +239,6 @@ int main(int argc, char* argv[])
 			case 'R':
 			case 'r':
 				reset();
-				break;
-			case 'S':
-			case 's':
-				move();
 				break;
 			default:
 				return false;
