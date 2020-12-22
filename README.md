@@ -24,7 +24,7 @@ Issue the following for simulation using FLIP method:
 For SPH method, press "a/A" to move one timestep forward, and press "r/R" to reset positions and velocities for all particles.
 For FLIP method, press "a/A" to move one timestep forward for water simulation, press "b/B" to move one timestep forward for smoke simulation, and press "r/R" to reset positions and velocities for all particles.
 ## Video
-Coming soon
+https://youtu.be/tieIpwKc4KM
 
 ## Report 
-Coming soon
+See <a href="https://github.com/lihd1003/CSC417-Fluid-Simulation/blob/master/paper.pdf">paper.pdf</a>
